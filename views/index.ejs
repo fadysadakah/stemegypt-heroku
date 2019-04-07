@@ -161,14 +161,14 @@
         </div>
     </div>
 </div>
-<script>
-     $('.start').on('click', function () {
-        $('html,body').animate({
-            scrollTop: $("#x").offset().top
-         },
-            'slow');
-    })
-
-</script>
 
     <%include partials/footer.ejs%>
+    <script>
+        $('.start').on('click', function () {
+            $('html,body').animate({
+                scrollTop: $("#x").offset().top
+            },
+                'slow');
+        })
+
+    </script>
