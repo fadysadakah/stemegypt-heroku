@@ -1,0 +1,73 @@
+<%include partials/header.ejs%>
+<%include partials/navbar.ejs%>
+
+<div class="containerx container">
+    <div id="x">
+        <form id="signup" method="POST" action="/signupp" onsubmit="return form_valdiate()">
+
+            <div class="form-group">
+                <label for="exampleInputPassword1">First name</label>
+                <input type="text" class="form-control" id="exampleInputPassword1" placeholder="First name"
+                    name="first_name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="exampleInputPassword1">Last name</label>
+                <input type="text" class="form-control" id="exampleInputPassword1" placeholder="Last name"
+                    name="last_name" required>
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="exampleInputEmail1">Email address</label>
+                <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                    placeholder="Enter email" name="email" required>
+                <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone
+                    else.</small>
+            </div>
+
+
+
+
+
+            <div class="form-group">
+                <label for="password1">Password</label>
+                <input type="password" class="form-control" id="password1" placeholder="Password" name="password" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password2">Confirm password</label>
+                <input type="password" class="form-control" id="password2" placeholder="Retype password"
+                    name="password_confirm" required>
+            </div>
+
+
+
+            <div class="form-group form-check">
+                <input type="checkbox" class="form-check-input" id="agree_box" name="agree_terms">
+                <label class="form-check-label" for="agree_box">I agree to <a href="">terms and
+                        conditions</a></label>
+            </div>
+
+
+            <button type="submit" class="btn btn-primary btn-block ">Sign up</button>
+        </form>
+
+        <%include partials/foot.ejs%>
+    </div>
+</div>
+<%include partials/footer.ejs%>
+
+<script>
+    function form_valdiate() {
+        // alert('1');
+        if ($('#password1').val() != $('#password2').val()) {
+            alert('Passwords didn\'t match');
+            return false;
+        }
+        if(!$('#agree_box').is(":checked")){
+            alert('please agree to our terms and conditions')
+            return false;
+        }}
+</script>
