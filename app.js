@@ -1,12 +1,19 @@
+const PORT = process.env.PORT || 5001;
 var express = require("express");
 var app = express();
 var request = require("request");
 var bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: !1 }));
-
 app.use(express.static("public"));
 
-const PORT = process.env.PORT || 5001;
+
+
+
+
+
+
+
+
 
 
 
@@ -27,8 +34,13 @@ app.get("/signup", function (req, res) {
 
 
 app.post("/signup", function (req, res) {
+    var first_name=req.body.first_name;
+    var last_name=req.body.last_name;
+    var email=req.body.email;
+    var password=req.body.password;
 
-    res.render("sign_up")
+    console.log(first_name);
+    res.redirect("/")
 });
 
 
