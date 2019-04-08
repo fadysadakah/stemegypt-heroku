@@ -5,7 +5,7 @@ var request = require("request");
 var bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: !1 }));
 app.use(express.static("public"));
-
+var name= ' ';
 
 ///////////////////////////////////////////////////////////////////////
 const pg = require('pg');
@@ -37,7 +37,7 @@ app.set("view engine", "ejs");
 
 app.get("/", function (req, res) {
 
-    res.render("index")
+    res.render("index",{name:name})
 });
 
 
@@ -60,6 +60,18 @@ app.post("/signup", function (req, res) {
     const query = client.query("insert into users(first_name, last_name, email, password) VALUES ('"+first_name+"', '"+last_name+"', '"+email+"', '"+password+"')");
     console.log(first_name);
     res.redirect("/")
+});
+
+app.post("/signin", function (req, res) {
+    var email=req.body.email;
+    var password=req.body.password;
+    const query = client.query("SELECT * FROM users where email='" + email + "' AND password='" + password + "'", (err, res) => {
+        if (err) throw err
+        console.log(res.rows[0].first_name)
+        name = res.rows[0].first_name;
+        client.end()
+    })
+    res.redirect("/", { first_name: name})
 });
 
 
