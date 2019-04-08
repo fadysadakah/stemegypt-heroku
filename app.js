@@ -5,9 +5,10 @@ var request = require("request");
 var bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: !1 }));
 app.use(express.static("public"));
-var name= ' ';
+var cookieParser = require('cookie-parser')
+app.use(cookieParser());
+var name = ' ';
 
-///////////////////////////////////////////////////////////////////////
 const pg = require('pg');
 const connectionString = process.env.DATABASE_URL || 'postgres://teidrwobeixtbr:a0b3c5b9951e160027ffff161c6a95d5e0849dda568d494377504d0cad6d7794@ec2-23-23-195-205.compute-1.amazonaws.com:5432/dfmorpksdk0uhp';
 
@@ -18,7 +19,7 @@ const client = new pg.Client({
     port: 5432,
     host: 'ec2-23-23-195-205.compute-1.amazonaws.com',
     ssl: true
-}); 
+});
 
 // query.on('end', () => { client.end(); });
 
@@ -36,8 +37,34 @@ app.set("view engine", "ejs");
 
 
 app.get("/", function (req, res) {
+    const client = new pg.Client({
+        user: 'teidrwobeixtbr',
+        password: 'a0b3c5b9951e160027ffff161c6a95d5e0849dda568d494377504d0cad6d7794',
+        database: 'dfmorpksdk0uhp',
+        port: 5432,
+        host: 'ec2-23-23-195-205.compute-1.amazonaws.com',
+        ssl: true
+    });
+    client.connect();
+    var email = req.cookies['email'];
+    var password = req.cookies['password'];
 
-    res.render("index",{name:name})
+    if (email != undefined && password != undefined) {
+
+        const query = client.query("SELECT * FROM users where email='" + email + "' AND password='" + password + "'", (err, RES) => {
+            if (err) throw err
+            if (RES.rows.length != 0) {
+                first_name = RES.rows[0].first_name;
+                last_name = RES.rows[0].last_name;
+                res.render("index", { name: first_name });
+            } else {
+                res.redirect("/signin");
+            }
+            client.end();
+        });
+    }
+    else{
+    res.render("index", { name: ' ' })}
 });
 
 
@@ -60,25 +87,30 @@ app.post("/signup", function (req, res) {
         port: 5432,
         host: 'ec2-23-23-195-205.compute-1.amazonaws.com',
         ssl: true
-    }); 
+    });
     client.connect();
-    var first_name=req.body.first_name;
-    var last_name=req.body.last_name;
-    var email=req.body.email;
-    var password=req.body.password;
-    const query = client.query("insert into users(first_name, last_name, email, password) VALUES ('" + first_name + "', '" + last_name + "', '" + email + "', '" + password + "')", (err, res) => {
-        if (err) throw err
-        console.log(res)
+    var first_name = req.body.first_name;
+    var last_name = req.body.last_name;
+    var email = req.body.email;
+    var password = req.body.password;
+    const query = client.query("insert into users(first_name, last_name, email, password) VALUES ('" + first_name + "', '" + last_name + "', '" + email + "', '" + password + "')", (err, RES) => {
+        if (err) { throw err }
+        else {
+            res.cookie('email', email);
+            res.cookie('password', password);
+            res.redirect("/");
+        }
         client.end();
     });
     console.log(first_name);
-    res.redirect("/")
-   
+
 });
 
 app.post("/signin", function (req, res) {
-    var email=req.body.email;
-    var password=req.body.password;
+    var email = req.body.email;
+    var password = req.body.password;
+    var first_name;
+    var last_name;
     const client = new pg.Client({
         user: 'teidrwobeixtbr',
         password: 'a0b3c5b9951e160027ffff161c6a95d5e0849dda568d494377504d0cad6d7794',
@@ -86,15 +118,28 @@ app.post("/signin", function (req, res) {
         port: 5432,
         host: 'ec2-23-23-195-205.compute-1.amazonaws.com',
         ssl: true
-    }); 
+    });
     client.connect();
-    const query = client.query("SELECT * FROM users where email='" + email + "' AND password='" + password + "'", (err, res) => {
+    const query = client.query("SELECT * FROM users where email='" + email + "' AND password='" + password + "'", (err, RES) => {
         if (err) throw err
-        console.log(res.rows[0].first_name)
-        name = res.rows[0].first_name;
+        // console.log(res.rows[0].first_name)
+
+        // console.log(res);
+        if (RES.rows.length != 0) {
+            first_name = RES.rows[0].first_name;
+            last_name = RES.rows[0].last_name;
+            suc = true;
+            res.cookie('email', email);
+            res.cookie('password', password);
+            res.redirect("/");
+            console.log('gggggggggg')
+        } else {
+            res.redirect("/signin");
+        }
         client.end();
     });
-    res.redirect("/")
+
+
 });
 
 
@@ -108,3 +153,7 @@ app.get("*", function (req, res) {
 app.listen(PORT, function () {
     console.log("Server Started")
 });
+
+function cleient_connect() {
+    
+}
