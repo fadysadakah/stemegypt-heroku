@@ -31,6 +31,10 @@ app.get("/signup", function (req, res) {
 
     res.render("sign_up")
 });
+app.get("/signin", function (req, res) {
+
+    res.render("sign_in")
+});
 
 
 app.post("/signup", function (req, res) {
