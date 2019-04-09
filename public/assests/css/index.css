@@ -88,10 +88,6 @@ h2 {
 }
 #signup {
     margin:100px 20%;
-    padding: 20px;
-    border: 1px solid rgb(160, 160, 160);
-    border-radius: 2px;
-     box-shadow: 0 0 15px 1px rgba(0, 0, 0, .12);
    
 
     
@@ -104,5 +100,20 @@ h2 {
      box-shadow: 0 0 15px 1px rgba(0, 0, 0, .12);
 
     
+}
+
+#signup_form{
+        padding: 20px;
+
+    border: 1px solid rgb(160, 160, 160);
+    border-radius: 5px;
+     box-shadow: 0 0 15px 1px rgba(0, 0, 0, .12);
+   
+
+}
+.inputerror{
+    background: #fbeff0 !important;
+    border: 1px solid rgb(248, 136, 146) !important;
+    box-shadow: 0 0 1px 2px rgb(248, 136, 146) !important;
 }
 

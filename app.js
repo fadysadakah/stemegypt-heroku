@@ -8,7 +8,7 @@ var cookieParser = require('cookie-parser')
 app.use(cookieParser());
 const pg = require('pg');
 var md5 = require('md5');
-
+var alert =false;
 app.set("view engine", "ejs");
 const PORT = process.env.PORT || 80;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -69,7 +69,7 @@ app.get("/", function (req, res) {
 
 app.get("/signup", function (req, res) {
 
-    res.render("sign_up", { is_signed_in: false })
+    res.render("sign_up", { is_signed_in: false ,alert:false})
 });
 app.get("/signin", function (req, res) {
 
@@ -87,7 +87,8 @@ app.post("/signup", function (req, res) {
     const query = client.query("insert into users(first_name, last_name, email, password) VALUES ('" + first_name + "', '" + last_name + "', '" + email + "', '" + password + "')", (err, RES) => {
         if (err) {
             console.log(err.detail);
-            res.redirect("/signup");
+            res.render("sign_up", { is_signed_in: false, alert: true })
+
         }
         else {
             res.cookie('email', email);
