@@ -39,7 +39,8 @@ app.get("/", function (req, res) {
     if (email != undefined && password != undefined) {
 
         const query = client.query("SELECT * FROM users where email='" + email + "'", (err, RES) => {
-            if (err) throw err
+            if (err) console.log(err.detail);
+
             if (RES.rows.length != 0) {
                 first_name = RES.rows[0].first_name;
                 last_name = RES.rows[0].last_name;
@@ -84,7 +85,10 @@ app.post("/signup", function (req, res) {
     var email = req.body.email;
     var password = req.body.password;
     const query = client.query("insert into users(first_name, last_name, email, password) VALUES ('" + first_name + "', '" + last_name + "', '" + email + "', '" + password + "')", (err, RES) => {
-        if (err) { throw err }
+        if (err) {
+            console.log(err.detail);
+            res.redirect("/signup");
+        }
         else {
             res.cookie('email', email);
             res.cookie('key', md5(password));
@@ -112,7 +116,8 @@ app.post("/signin", function (req, res) {
     var last_name;
 
     const query = client.query("SELECT * FROM users where email='" + email + "' AND password='" + password + "'", (err, RES) => {
-        if (err) throw err
+        if (err) console.log(err.detail);
+
 
         if (RES.rows.length != 0) {
             first_name = RES.rows[0].first_name;
@@ -126,7 +131,6 @@ app.post("/signin", function (req, res) {
                 res.cookie('key', md5(password), { maxAge: 365 * 24 * 60 * 60 * 1000 });
             }
             res.redirect("/");
-            console.log('gggggggggg')
         } else {
             res.redirect("/signin");
         }
