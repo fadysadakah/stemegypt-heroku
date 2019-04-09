@@ -149,7 +149,7 @@ app.post("/signin", function (req, res) {
 
 app.get("/g-signin", function (req, res) {
     
-    res.render("google_sign_in");
+    res.render("partials/google_sign_in");
 });
 
 
