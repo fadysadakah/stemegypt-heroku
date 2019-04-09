@@ -3,9 +3,16 @@
        <a href="/"> <img src="/images/wlogo.png" id="wlogo" alt="stem logo" title="website logo">
         <h2>StemEgypt</h2>
         </a>
+        <%if(is_signed_in){%>
 
-       <a href="/signin"> <button class="btn btn-md btn-success login">Login</button></a>
-       <a href="/signup"><button class="btn btn-md btn-success login">sign up</button></a>
+            <a href="/"><button class="btn btn-md btn-success login" id="sign_out">Logout</button></a>
+        <%}else{%>
+
+            <a href="/signin"> <button class="btn btn-md btn-success login">Login</button></a>
+            <a href="/signup"><button class="btn btn-md btn-success login">sign up</button></a>
+    <%}%>
+
     </div>
 
+    
 </div>

@@ -1,4 +1,3 @@
-const PORT = process.env.PORT || 5001;
 var express = require("express");
 var app = express();
 var request = require("request");
@@ -7,8 +6,17 @@ app.use(bodyParser.urlencoded({ extended: !1 }));
 app.use(express.static("public"));
 var cookieParser = require('cookie-parser')
 app.use(cookieParser());
-var name = ' ';
 const pg = require('pg');
+var md5 = require('md5');
+
+app.set("view engine", "ejs");
+const PORT = process.env.PORT || 80;
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 const client = new pg.Client({
     user: 'teidrwobeixtbr',
     password: 'a0b3c5b9951e160027ffff161c6a95d5e0849dda568d494377504d0cad6d7794',
@@ -18,35 +26,32 @@ const client = new pg.Client({
     ssl: true
 });
 
-////////////////////////////////////////////////////////////////////////////////
 client.connect();
 
-
-
-
-
-
-
-
-
-
-
-app.set("view engine", "ejs");
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 app.get("/", function (req, res) {
-   
+
     var email = req.cookies['email'];
-    var password = req.cookies['password'];
+    var password = req.cookies['key'];
 
     if (email != undefined && password != undefined) {
 
-        const query = client.query("SELECT * FROM users where email='" + email + "' AND password='" + password + "'", (err, RES) => {
+        const query = client.query("SELECT * FROM users where email='" + email + "'", (err, RES) => {
             if (err) throw err
             if (RES.rows.length != 0) {
                 first_name = RES.rows[0].first_name;
                 last_name = RES.rows[0].last_name;
-                res.render("index", { name: first_name });
+                var passworddb = md5(RES.rows[0].password);
+                if (passworddb == password) {
+
+                    res.render("index", { name: first_name, is_signed_in: true });
+
+                } else {
+                    res.redirect("/signin");
+
+                }
             } else {
                 res.redirect("/signin");
             }
@@ -54,21 +59,23 @@ app.get("/", function (req, res) {
         });
     }
     else {
-        res.render("index", { name: ' ' })
+        res.render("index", { name: ' ', is_signed_in: false })
     }
 });
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 app.get("/signup", function (req, res) {
 
-    res.render("sign_up")
+    res.render("sign_up", { is_signed_in: false })
 });
 app.get("/signin", function (req, res) {
 
-    res.render("sign_in")
+    res.render("sign_in", { is_signed_in: false })
 });
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 app.post("/signup", function (req, res) {
 
@@ -80,21 +87,30 @@ app.post("/signup", function (req, res) {
         if (err) { throw err }
         else {
             res.cookie('email', email);
-            res.cookie('password', password);
+            res.cookie('key', md5(password));
             res.redirect("/");
         }
-       
+
     });
     console.log(first_name);
 
 });
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 app.post("/signin", function (req, res) {
     var email = req.body.email;
     var password = req.body.password;
+    var remember_me = req.body.remember_me;
+    if (remember_me == undefined) {
+
+        console.log('remember_me');
+    }
+    else { }
     var first_name;
     var last_name;
-  
+
     const query = client.query("SELECT * FROM users where email='" + email + "' AND password='" + password + "'", (err, RES) => {
         if (err) throw err
 
@@ -102,19 +118,25 @@ app.post("/signin", function (req, res) {
             first_name = RES.rows[0].first_name;
             last_name = RES.rows[0].last_name;
             suc = true;
-            res.cookie('email', email);
-            res.cookie('password', password);
+            if (remember_me == undefined) {
+                res.cookie('email', email);
+                res.cookie('key', md5(password));
+            } else {
+                res.cookie('email', email, { maxAge: 365 * 24 * 60 * 60 * 1000 });
+                res.cookie('key', md5(password), { maxAge: 365 * 24 * 60 * 60 * 1000 });
+            }
             res.redirect("/");
             console.log('gggggggggg')
         } else {
             res.redirect("/signin");
         }
-   
+
     });
 
 
 });
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 app.get("*", function (req, res) {
     res.status(404);
@@ -126,7 +148,3 @@ app.get("*", function (req, res) {
 app.listen(PORT, function () {
     console.log("Server Started")
 });
-
-function cleient_connect() {
-
-}
