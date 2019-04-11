@@ -19,8 +19,8 @@ var transporter = nodemailer.createTransport({
     port: 465,
 
     auth: {
-        user: 'adhamsadakah00@gmail.com',
-        pass: 'sublime.css'
+        user: 'bassem.sadaqah@gmail.com',
+        pass: 'fpmtfmcvrwpenfuy'
     }
 });
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -199,16 +199,6 @@ app.get("/verfiy", function (req, res) {
 app.get("*", function (req, res) {
     res.status(404);
     res.render("error");
-
-    var send = require('gmail-send')({
-        user: 'adhamsadakah00@gmail.com',
-        pass: 'sublime.css',
-        to: 'fadysadakah.emh@gmail.com',
-        subject: 'test subject',
-        text: 'gmail-send example 1',         // Plain text
-        //html:    '<b>html text</b>'            // HTML
-    });
-    console.log(send());
 
 });
 
