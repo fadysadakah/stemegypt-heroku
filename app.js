@@ -14,8 +14,9 @@ app.set("view engine", "ejs");
 const PORT = process.env.PORT || 80;
 var transporter = nodemailer.createTransport({
     // service: 'gmail',
+   service:'yahoo',
     host: 'smtp.mail.yahoo.com',
-    secure: true,
+    secure: false,
     port: 465,
 
     auth: {
