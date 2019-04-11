@@ -10,7 +10,6 @@ const pg = require('pg');
 var md5 = require('md5');
 const nodemailer = require("nodemailer");
 var crypto = require("crypto");
-var alert =false;
 app.set("view engine", "ejs");
 const PORT = process.env.PORT || 80;
 var transporter = nodemailer.createTransport({
@@ -158,7 +157,8 @@ app.post("/signin", function (req, res) {
 
 
 app.post("/g-signin", function (req, res) {
-   console.log(req.body);});
+//    console.log(req.body);
+});
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
