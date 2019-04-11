@@ -108,8 +108,8 @@ app.post("/signup", function (req, res) {
         }
         else {
 
-            res.render("sign_up", { is_signed_in: false, alert: false,verfiy: true })
             send_verfiy_mail(email,verfiy_token);
+            res.render("sign_up", { is_signed_in: false, alert: false,verfiy: true })
 
 
         }
