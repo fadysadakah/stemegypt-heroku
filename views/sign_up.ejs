@@ -6,6 +6,12 @@
 
 
         <div id="signup">
+            <%if(verfiy){%>
+            <div class="alert alert-success animated shake" role="alert" id="alertt">
+                Please check your mail for a verfication code <a href="/signin">sign in now</a> </div>
+            
+            
+            <%}else{%>
             <%if(alert){%>
             <div class="alert alert-danger animated shake" role="alert" id="alertt">
                 Email is alreadyin use <a href="/signin">sign in now</a> </div>
@@ -15,7 +21,7 @@
 
             <div class="alert alert-danger animated shake" role="alert" id="alert" style="visibility:hidden;">
                 Email is alreadyin use <a href="/signin">sign in now</a> </div>
-            <%}%>      
+            <%}}%>      
             <form id="signup_form" method="POST" action="/signup" onsubmit="return form_valdiate()">
 
                 <div class="form-group">
