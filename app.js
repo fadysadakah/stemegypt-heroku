@@ -14,13 +14,13 @@ app.set("view engine", "ejs");
 const PORT = process.env.PORT || 80;
 var transporter = nodemailer.createTransport({
     // service: 'gmail',
-    host: 'smtp.gmail.com',
+    host: 'smtp.mail.yahoo.com',
     secure: true,
     port: 465,
 
     auth: {
-        user: 'adhamsadakah00@gmail.com',
-        pass: 'sublime.css'
+        user: 'stemegypt@yahoo.com',
+        pass: 'wasdwasd123'
     }
 });
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
