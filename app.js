@@ -183,16 +183,16 @@ app.get("/verfiy", function (req, res) {
                 res.status(404);
                 res.render("error");
             }else{
-                client.query("update users set isverfied='true', verfiy_token=NULL where verfiy_token='" + verfiy_token + "'", (err2, RES2) => {
+                var session_id = crypto.randomBytes(20).toString('HEX');
+                res.cookie('session_id', session_id);
+                var expire_time = Date.now() + (3 * 60 * 60 * 1000)
+                client.query("update users set session_id='" + session_id + "',session_id_expiration=" + expire_time + ",isverfied='true', verfiy_token=NULL where verfiy_token='" + verfiy_token + "'", (err2, RES2) => {
                     if (err2) {
                         console.log(err2);
                         res.status(404);
                         res.render("error");
                     }else{
-                        var session_id = crypto.randomBytes(20).toString('HEX');
-                        res.cookie('session_id', session_id);
-                        var expire_time = Date.now() + (3 * 60 * 60 * 1000)
-                        client.query("update users set session_id='" + session_id + "',session_id_expiration=" + expire_time + " where email='" + email + "'", (err, RES) => { if (err) console.log(err); });
+
                         res.redirect('/')
                     }
                 });
