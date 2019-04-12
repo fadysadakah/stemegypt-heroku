@@ -49,21 +49,23 @@ app.get("/", function (req, res) {
 
     var email = req.cookies['email'];
     var password = req.cookies['key'];
+    var session_id = req.cookies['session_id'];
 
-    if (email != undefined && password != undefined) {
+    if (session_id != undefined ) {
 
-        const query = client.query("SELECT * FROM users where email='" + email + "'", (err, RES) => {
+        client.query("SELECT * FROM users where session_id='" + session_id + "'", (err, RES) => {
             if (err) console.log(err.detail);
 
             if (RES.rows.length != 0) {
                 first_name = RES.rows[0].first_name;
-                last_name = RES.rows[0].last_name;
-                var passworddb = md5(RES.rows[0].password);
-                if (passworddb == password) {
+                expire_time = RES.rows[0].session_id_expiration;
+
+                if (expire_time > Date.now()) {
 
                     res.render("index", { name: first_name, is_signed_in: true });
 
                 } else {
+
                     res.redirect("/signin");
 
                 }
@@ -127,20 +129,23 @@ app.post("/signin", function (req, res) {
     var remember_me = req.body.remember_me;
 
 
-    const query = client.query("SELECT * FROM users where email='" + email + "' AND password='" + password + "'", (err, RES) => {
+     client.query("SELECT * FROM users where email='" + email + "' AND password='" + password + "'", (err, RES) => {
         if (err) console.log(err.detail);
 
 
         if (RES.rows.length != 0 && RES.rows[0].isverfied!='false') {
             first_name = RES.rows[0].first_name;
             last_name = RES.rows[0].last_name;
-            suc = true;
             if (remember_me == undefined) {
-                res.cookie('email', email);
-                res.cookie('key', md5(password));
+                var session_id = crypto.randomBytes(20).toString('HEX');
+                res.cookie('session_id',session_id);
+                var expire_time = Date.now() + (3 * 60 * 60 * 1000)
+                client.query("update users set session_id='" + session_id + "',session_id_expiration=" + expire_time + " where email='" + email + "'", (err, RES) => {   if (err) console.log(err);});
             } else {
-                res.cookie('email', email, { maxAge: 365 * 24 * 60 * 60 * 1000 });
-                res.cookie('key', md5(password), { maxAge: 365 * 24 * 60 * 60 * 1000 });
+                var session_id = crypto.randomBytes(20).toString('HEX');
+                res.cookie('session_id', session_id, { maxAge: 365 * 24 * 60 * 60 * 1000 });
+                var expire_time = Date.now() + (365 * 24 * 60 * 60 *1000)
+                client.query("update users set session_id='" + session_id + "',session_id_expiration=" + expire_time + " where email='" + email + "'", (err, RES) => { });
             }
             res.redirect("/");
         } else {
@@ -157,7 +162,7 @@ app.post("/signin", function (req, res) {
 
 
 app.post("/g-signin", function (req, res) {
-//    console.log(req.body);
+   console.log(req.body.id_token);
 });
 
 
@@ -184,8 +189,10 @@ app.get("/verfiy", function (req, res) {
                         res.status(404);
                         res.render("error");
                     }else{
-                        res.cookie('email', RES.rows[0].email);
-                        res.cookie('key', md5(RES.rows[0].password));
+                        var session_id = crypto.randomBytes(20).toString('HEX');
+                        res.cookie('session_id', session_id);
+                        var expire_time = Date.now() + (3 * 60 * 60 * 1000)
+                        client.query("update users set session_id='" + session_id + "',session_id_expiration=" + expire_time + " where email='" + email + "'", (err, RES) => { if (err) console.log(err); });
                         res.redirect('/')
                     }
                 });

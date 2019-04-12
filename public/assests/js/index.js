@@ -1,6 +1,6 @@
 function del_cok() {
-    document.cookie = 'email' + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-    document.cookie = 'key' + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    document.cookie = 'session_id' + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    // document.cookie = 'key' + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
     // document.location.reload();
 }
 $('#sign_out').on('click', del_cok);
@@ -51,7 +51,7 @@ function onSignIn(googleUser) {
             id_token: googleUser.getAuthResponse().id_token
         },
         function (data, status) {
-            // alert("Data: " + data + "\nStatus: " + status);
+            alert("Data: " + data + "\nStatus: " + status);
         });
     // The ID token you need to pass to your backend:
     var id_token = googleUser.getAuthResponse().id_token;
