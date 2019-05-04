@@ -44,6 +44,9 @@ client.connect();
 app.get("/terms", function (req, res) {
     res.render('terms',{is_signed_in:false})
 })
+app.get("/fad", function (req, res) {
+    res.render('fade7a')
+})
 
 app.get("/", function (req, res) {
 
